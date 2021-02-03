@@ -1,14 +1,20 @@
 program main
 implicit none
-    complex :: H2(2, 2), H3(3, 3)
-    integer :: i
+    complex            :: H2(2, 2), H3(3, 3)
+    integer            :: i
+    real, allocatable  :: e0(:), phi0(:)
+    logical            :: conv
 
     H2 = H_2lvl(1., 1., 1.)
-    H3 = H_3lvl(1., 1., 1., 1., 1., 1.)
+    ! H3 = H_3lvl(1., 1., 1., 1., 1., 1.)
 
-    do i=1, size(H3, 1)
-        write(*, *) H3(i, :)
-    enddo
+    ! do i=1, size(H3, 1)
+    !     write(*, *) H3(i, :)
+    ! enddo
+
+    allocate(phi0(size(H2, 1)))
+    allocate(e0(size(H2, 1)))
+    call grounds_state(size(H2, 1), H2, 1., 1d-8, 1000., phi0, e0, conv)
 
 contains
 
@@ -52,29 +58,31 @@ end program main
 
 subroutine grounds_state(dimH, H, mu, eps, kmax, phi0, e0, conv)
     implicit none
-    integer           , intent(in)  :: dimH
-    real, intent(in)                :: H(dimH, dimH), mu, eps, kmax
-    real, intent(out)               :: phi0(dimH), e0
-    logical, intent(out)            :: conv
-    integer                         :: k, id(dimH, dimH), i, j
-    real                            :: vect(dimH)
+    integer, intent(in)  :: dimH
+    complex              :: H(dimH, dimH)
+    real, intent(in)     :: mu, eps, kmax
+    real, intent(out)    :: phi0(dimH), e0(dimH)
+    logical, intent(out) :: conv
+    integer              :: k, id(dimH, dimH), i, j
+    real                 :: vect(dimH)
 
     conv = .false.
     id = identity(dimH)
 
     H = H - mu * id
-    vect = prod_mat_vect(H, phi0, dimH) - dot_product(dot_product(prod_mat_vect(phi0, H, dimH), phi0), phi0)
+    vect = matmul(H, phi0) - matmul(matmul(phi0, matmul(H, phi0)), phi0)
     do while (norm(vect, dimH) > eps .and. k <= kmax)
-        phi0 = prod_mat_vect(H, phi0, dimH)
+        phi0 = matmul(H, phi0)
         phi0 = phi0 / norm(phi0, dimH)
         k = k + 1
+
     enddo
 
     if (k > kmax) then
         conv = .true.
     endif
     H = H + mu * id
-    e0 = dot_product(prod_mat_vect(phi0, H, dimH), phi0)
+    e0 = matmul(matmul(phi0, H), phi0)
 
     contains
 
@@ -97,27 +105,15 @@ subroutine grounds_state(dimH, H, mu, eps, kmax, phi0, e0, conv)
 
     real function norm(v, dimv)
         implicit none
-        integer               :: dimv
-        real, dimension(dimv) :: v
+        integer :: dimv
+        complex :: v(dimv)
 
         do i=1, dimv
-            norm = norm + v(i) * v(i)
+            norm = norm + abs(v(i)) * abs(v(i))
         enddo
 
         norm = sqrt(norm)
         
     end function norm
-
-    function prod_mat_vect(M, v, dim)
-        implicit none
-        integer :: dim
-        real    :: M(dim, dim), v(dim), prod_mat_vect(dim)
-
-        do i=1, dim
-            prod_mat_vect(i) = dot_product(M(i, :), v)
-        enddo
-        
-    end function prod_mat_vect
     
 end subroutine grounds_state
-
