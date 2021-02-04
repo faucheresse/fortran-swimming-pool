@@ -1,38 +1,36 @@
 program pool
 implicit none
     complex*8              :: H2(2, 2), H3(3, 3)
-    integer                :: i
-    real*8, allocatable    :: e0(:)
+    real*8                 :: eig_0
     complex*8, allocatable :: phi0(:)
     logical                :: conv
 
-    H2 = H_2lvl(1d0, 1d0, 1d0)
+    H2 = H_2lvl(3.5_8, 2d0 / 3d0, 1d0)
     call main(H2, size(H2, 1))
 
-    H3 = H_3lvl(1d0, 1d0, 1d0, 1d0, 1d0, 1d0)
-    call main(H3, size(H3, 1))
+    ! H3 = H_3lvl(3.5_8, 2d0 / 3d0, 5d-1, 3.5_8, 7d0 / 3d0, -5d-1)
+    ! call main(H3, size(H3, 1))
 
 contains
 
     subroutine main(H, dim)
         implicit none
-        integer                 :: dim
-        complex, dimension(dim) :: H
+        integer   :: dim, i
+        complex*8 :: H(dim, dim)
+        real*8    :: shift
 
-        allocate(phi0(size(H, 1)))
-        allocate(e0(size(H, 1)))
+        allocate(phi0(dim))
 
-        call grounds_state(size(H, 1), H, 1d0, 1d-8, 1d4, phi0, e0, conv)
+        shift = 1.d2
+        phi0 = phi0 * 0d0 + (2.d0, 0d0)
 
-        do i=1, size(phi0)
-            write(*, *) phi0(:)
-        enddo
+        call grounds_state(size(H, 1), H, shift, 1d-8, 1d4, phi0, eig_0, conv)
 
-        print*, e0
-        print*, conv
+        print*, "eig_0 = ", eig_0
+        print*, "Has converged: ", conv
+        print*, " "
 
         deallocate(phi0)
-        deallocate(e0)
 
         
     end subroutine main
@@ -42,7 +40,7 @@ contains
 
         complex*8, dimension(2, 2) :: H_2lvl
         real*8, intent(in)         :: omega, phi, delta
-        complex*8, parameter       :: i = (0, 1)
+        complex*8, parameter       :: i = (0_8, 1_8)
 
         H_2lvl(1, 1) = 0d0
         H_2lvl(1, 2) = omega * exp(i * phi)
@@ -58,7 +56,7 @@ contains
         complex*8, dimension(3, 3) :: H_3lvl
         real*8, intent(in)         :: omega_p, phi_p, delta_p
         real*8, intent(in)         :: omega_s, phi_s, delta_s
-        complex*8, parameter       :: i = (0d0, 1d0)
+        complex*8, parameter       :: i = (0_8, 1_8)
 
         H_3lvl(1, 1) = 0d0
         H_3lvl(1, 2) = omega_p * exp(i * phi_p)
