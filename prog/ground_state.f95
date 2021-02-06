@@ -10,26 +10,27 @@ subroutine grounds_state(dimH, H, mu, eps, kmax, phi0, eig_0, conv)
 
     conv = .false.
     id = identity(dimH)
+    k = 0
 
     H = H - mu * id
-    vect = matmul(H, phi0) - dot_product(conjg(phi0), matmul(H, phi0)) * phi0
+    vect = matmul(H, phi0) - dot_product(phi0, matmul(H, phi0)) * phi0
 
 
-    do while (norm(vect, dimH) > eps .and. k <= kmax)
-        print*, phi0
+    do while (norm(vect, dimH) > eps .and. k < kmax)
         phi0 = matmul(H, phi0)
         phi0 = phi0 / norm(phi0, dimH)
         k = k + 1
+        print*, k
 
     enddo
 
-    if (k > kmax) then
+    if (k >= kmax) then
         conv = .true.
     endif
 
     H = H + mu * id
 
-    eig_0 = real(dot_product(conjg(phi0), matmul(H, phi0)))
+    eig_0 = real(dot_product(phi0, matmul(H, phi0)))
 
     contains
 

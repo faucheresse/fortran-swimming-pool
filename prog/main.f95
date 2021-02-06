@@ -8,8 +8,8 @@ implicit none
     H2 = H_2lvl(3.5_8, 2d0 / 3d0, 1d0)
     call main(H2, size(H2, 1))
 
-    ! H3 = H_3lvl(3.5_8, 2d0 / 3d0, 5d-1, 3.5_8, 7d0 / 3d0, -5d-1)
-    ! call main(H3, size(H3, 1))
+    H3 = H_3lvl(3.5_8, 2d0 / 3d0, 5d-1, 3.5_8, 7d0 / 3d0, -5d-1)
+    call main(H3, size(H3, 1))
 
 contains
 
@@ -24,8 +24,9 @@ contains
         shift = 1.d2
         phi0 = phi0 * 0d0 + (2.d0, 0d0)
 
-        call grounds_state(size(H, 1), H, shift, 1d-8, 1d4, phi0, eig_0, conv)
+        call grounds_state(size(H, 1), H, shift, 1d-8, 1d3, phi0, eig_0, conv)
 
+        print"('case: (', I1, ', ', I1, ')')", size(H, 1), size(H, 2)
         print*, "eig_0 = ", eig_0
         print*, "Has converged: ", conv
         print*, " "
