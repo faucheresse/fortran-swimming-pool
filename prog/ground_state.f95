@@ -1,42 +1,84 @@
-subroutine grounds_state(dimH, H, mu, eps, kmax, phi0, eig_0, conv)
+subroutine state(dimH, H, mu, eps, kmax, phi0, eig_0, conv_0, phi1, eig_1, conv_1)
     implicit none
-    integer*8, intent(in) :: dimH
-    complex*8             :: H(dimH, dimH), phi0(dimH)
+    integer*4, intent(in) :: dimH
+    complex*8             :: H(dimH, dimH), phi0(dimH), phi1(dimH)
     real*8, intent(in)    :: mu, eps, kmax
-    real*8, intent(out)   :: eig_0
-    logical, intent(out)  :: conv
-    integer*8             :: k, id(dimH, dimH), i, j
-    complex*8             :: vect(dimH)
+    real*8, intent(out)   :: eig_0, eig_1
+    logical, intent(out)  :: conv_0, conv_1
+    integer*8             :: k, id(dimH, dimH)
 
-    conv = .false.
-    id = identity(dimH)
-    k = 0
+    call ground_state
+    call first_state
 
-    H = H - mu * id
-    vect = matmul(H, phi0) - dot_product(phi0, matmul(H, phi0)) * phi0
-
-
-    do while (norm(vect, dimH) > eps .and. k < kmax)
-        phi0 = matmul(H, phi0)
-        phi0 = phi0 / norm(phi0, dimH)
-        k = k + 1
-        print*, k
-
-    enddo
-
-    if (k >= kmax) then
-        conv = .true.
-    endif
-
-    H = H + mu * id
-
-    eig_0 = real(dot_product(phi0, matmul(H, phi0)))
+    print"('case: (', I1, ', ', I1, ')')", size(H, 1), size(H, 2)
+    print*, "eig_0 = ", eig_0, "eig_1 = ", eig_1
+    print*, "Has converged: ground state: ", conv_0, " first_state: ", conv_1
+    print*, " "
 
     contains
 
+    subroutine ground_state
+        implicit none
+
+        conv_0 = .false.
+        id = identity(dimH)
+        k = 0
+
+        phi0 = phi0 / norm(phi0, dimH)
+        H = H - mu * id
+
+        do while (norm(matmul(H, phi0) - dot_product(phi0, matmul(H, phi0))&
+                                            * phi0, dimH) > eps .and. k < kmax)
+            phi0 = matmul(H, phi0)
+            phi0 = phi0 / norm(phi0, dimH)
+            k = k + 1
+
+        enddo
+
+        if (k > kmax) then
+            conv_0 = .true.
+        endif
+
+        H = H + mu * id
+
+        eig_0 = real(dot_product(phi0, matmul(H, phi0)))
+        
+    end subroutine ground_state
+
+    subroutine first_state
+        implicit none
+
+        conv_1 = .false.
+        id = identity(dimH)
+        k = 0
+
+        phi1 = phi1 - dot_product(phi0, phi1) * phi0
+        phi1 = phi1 / norm(phi1, dimH)
+
+        H = H - mu * id
+
+        do while (norm(matmul(H, phi1) - dot_product(phi1, matmul(H, phi1))&
+                                            * phi1, dimH) > eps .and. k < kmax)
+            phi1 = matmul(H, phi1)
+            phi1 = phi1 - dot_product(phi0, phi1) * phi0
+            phi1 = phi1 / norm(phi1, dimH)
+            k = k + 1
+
+        enddo
+
+        if (k > kmax) then
+            conv_1 = .true.
+        endif
+
+        H = H + mu * id
+
+        eig_1 = real(dot_product(phi1, matmul(H, phi1)))
+        
+    end subroutine first_state
+
     function identity(dim)
         implicit none
-        integer*8                      :: dim
+        integer*4                      :: dim, i, j
         integer*8, dimension(dim, dim) :: identity
 
         do i=1, dimH
@@ -53,11 +95,11 @@ subroutine grounds_state(dimH, H, mu, eps, kmax, phi0, eig_0, conv)
 
     real*8 function norm(v, dimv)
         implicit none
-        integer*8  :: dimv
+        integer*4  :: dimv
         complex*8  :: v(dimv)
 
-        norm = sqrt(dot_product(v, conjg(v)))
+        norm = sqrt(real(dot_product(v, v)))
         
     end function norm
     
-end subroutine grounds_state
+end subroutine state
