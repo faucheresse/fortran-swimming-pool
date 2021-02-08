@@ -1,17 +1,21 @@
 subroutine state(dimH, H, mu, eps, kmax, phi0, eig_0, conv_0, phi1, eig_1, conv_1)
     implicit none
-    integer*4, intent(in) :: dimH
-    complex*8             :: H(dimH, dimH), phi0(dimH), phi1(dimH)
-    real*8, intent(in)    :: mu, eps, kmax
-    real*8, intent(out)   :: eig_0, eig_1
-    logical, intent(out)  :: conv_0, conv_1
-    integer*8             :: k, id(dimH, dimH)
+    integer*4, intent(in)    :: dimH
+    complex*8                :: H(dimH, dimH)
+    real*8, intent(in)       :: mu, eps, kmax
+    complex*8, intent(inout) :: phi0(dimH), phi1(dimH)
+    real*8, intent(out)      :: eig_0, eig_1
+    logical, intent(out)     :: conv_0, conv_1
+    integer*8                :: k, id(dimH, dimH)
 
     call ground_state
     call first_state
 
     print"('case: (', I1, ', ', I1, ')')", size(H, 1), size(H, 2)
-    print*, "eig_0 = ", eig_0, "eig_1 = ", eig_1
+    print*, "phi0:", phi0
+    print*, "phi1:", phi1
+    print*, "eig_0 = ", eig_0
+    print*, "eig_1 = ", eig_1
     print*, "Has converged: ground state: ", conv_0, " first_state: ", conv_1
     print*, " "
 
@@ -20,7 +24,7 @@ subroutine state(dimH, H, mu, eps, kmax, phi0, eig_0, conv_0, phi1, eig_1, conv_
     subroutine ground_state
         implicit none
 
-        conv_0 = .false.
+        conv_0 = .true.
         id = identity(dimH)
         k = 0
 
@@ -35,8 +39,8 @@ subroutine state(dimH, H, mu, eps, kmax, phi0, eig_0, conv_0, phi1, eig_1, conv_
 
         enddo
 
-        if (k > kmax) then
-            conv_0 = .true.
+        if (k >= kmax) then
+            conv_0 = .false.
         endif
 
         H = H + mu * id
@@ -48,7 +52,7 @@ subroutine state(dimH, H, mu, eps, kmax, phi0, eig_0, conv_0, phi1, eig_1, conv_
     subroutine first_state
         implicit none
 
-        conv_1 = .false.
+        conv_1 = .true.
         id = identity(dimH)
         k = 0
 
@@ -66,8 +70,8 @@ subroutine state(dimH, H, mu, eps, kmax, phi0, eig_0, conv_0, phi1, eig_1, conv_
 
         enddo
 
-        if (k > kmax) then
-            conv_1 = .true.
+        if (k >= kmax) then
+            conv_1 = .false.
         endif
 
         H = H + mu * id

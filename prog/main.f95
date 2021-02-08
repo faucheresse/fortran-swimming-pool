@@ -1,14 +1,14 @@
 program pool
 implicit none
     complex*8 :: H2(2, 2)
-    ! complex*8 :: H3(3, 3)
+    complex*8 :: H3(3, 3)
     
 
-    H2 = H_2lvl(0.d0, 1.d0, 1d0)
+    H2 = H_2lvl(0.d-8, 8.d-1, 1.d0)
     call main(H2, size(H2, 1))
 
-    ! H3 = H_3lvl(3.5_8, 2d0 / 3d0, 5d-1, 3.5_8, 7d0 / 3d0, -5d-1)
-    ! call main(H3, size(H3, 1))
+    H3 = H_3lvl(0.d-8, 8.d-1, 5d-1, 0.d-8, 8.d-1, -5d-1)
+    call main(H3, size(H3, 1))
 
 contains
 
@@ -24,9 +24,13 @@ contains
         allocate(phi0(size(H, 1)))
         allocate(phi1(size(H, 1)))
 
+        do i=1, dim
+            print*, H(i, :)
+        enddo
+
         shift = sum( (/ (real(H(i,i)), i=1, size(H, 1)) /) ) + 1d0
-        phi0 = phi0 * 0d0 + (2.d0, 0d0)
-        phi1 = phi1 * 0d0 + (2.d0, 0d0)
+        phi0 = phi0 * 0d0 + (1.d0, 0d0)
+        phi1 = phi1 * 0d0 + (1.d0, 0d0)
 
         call state(size(H, 1), H, shift, 1d-8, 1d3, phi0, eig_0, conv_0, phi1, eig_1, conv_1)
 
