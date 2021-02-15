@@ -1,12 +1,12 @@
 subroutine state(dimH, H, mu, eps, kmax, phi0, eig_0, conv_0, phi1, eig_1, conv_1)
     implicit none
-    integer*4, intent(in)    :: dimH
-    complex*8                :: H(dimH, dimH)
-    real*8, intent(in)       :: mu, eps, kmax
-    complex*8, intent(inout) :: phi0(dimH), phi1(dimH)
-    real*8, intent(out)      :: eig_0, eig_1
-    logical, intent(out)     :: conv_0, conv_1
-    integer*8                :: k, id(dimH, dimH)
+    integer(kind=4), intent(in)    :: dimH
+    complex(kind=8)                :: H(dimH, dimH)
+    real(kind=8), intent(in)       :: mu, eps, kmax
+    complex(kind=8), intent(inout) :: phi0(dimH), phi1(dimH)
+    real(kind=8), intent(out)      :: eig_0, eig_1
+    logical, intent(out)           :: conv_0, conv_1
+    integer(kind=8)                :: k, id(dimH, dimH)
 
     call ground_state
     call first_state
@@ -82,8 +82,8 @@ subroutine state(dimH, H, mu, eps, kmax, phi0, eig_0, conv_0, phi1, eig_1, conv_
 
     function identity(dim)
         implicit none
-        integer*4                      :: dim, i, j
-        integer*8, dimension(dim, dim) :: identity
+        integer(kind=4)                      :: dim, i, j
+        integer(kind=8), dimension(dim, dim) :: identity
 
         do i=1, dimH
             do j=1, dimH
@@ -97,10 +97,10 @@ subroutine state(dimH, H, mu, eps, kmax, phi0, eig_0, conv_0, phi1, eig_1, conv_
         
     end function identity
 
-    real*8 function norm(v, dimv)
+    real(kind=8) function norm(v, dimv)
         implicit none
-        integer*4  :: dimv
-        complex*8  :: v(dimv)
+        integer(kind=4) :: dimv
+        complex(kind=8) :: v(dimv)
 
         norm = sqrt(real(dot_product(v, v)))
         
