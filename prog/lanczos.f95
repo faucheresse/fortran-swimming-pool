@@ -1,9 +1,9 @@
-subroutine lanczos(H, dim, psi)
+subroutine lanczos(H, N, psi)
     implicit none
-    integer(kind=4) :: dim
+    integer(kind=4) :: N
     complex(kind=8) :: H(N, N), psi(N)
 
-    
+    call krilov(H, )
 
 contains
 
