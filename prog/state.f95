@@ -85,8 +85,8 @@ subroutine state(dimH, H, mu, eps, kmax, phi0, eig_0, conv_0, phi1, eig_1, conv_
         integer(kind=4)                      :: dim, i, j
         integer(kind=8), dimension(dim, dim) :: identity
 
-        do i=1, dimH
-            do j=1, dimH
+        do i=1, dim
+            do j=1, dim
                 if (i == j) then
                     identity(i, j) = 1
                 else
