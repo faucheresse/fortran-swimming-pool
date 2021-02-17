@@ -1,16 +1,30 @@
 program pool
 implicit none
-    complex(kind=8)            :: H2(2, 2)
-    ! complex(kind=8)            :: H3(3, 3)
+    ! complex(kind=8)              :: H2(2, 2)
+    ! complex(kind=8)              :: H3(3, 3)
     ! complex(kind=8), allocatable :: mol_H(:, :)
     ! integer, parameter           :: N = 2 !has to be positive
+    complex(kind=8) :: test(3, 3)
     
+    test(1, 1) = 1
+    test(1, 2) = 1
+    test(1, 3) = 1
+    test(2, 1) = 1
+    test(2, 2) = 1
+    test(2, 3) = 1
+    test(3, 1) = 1
+    test(3, 2) = 1
+    test(3, 3) = 1
 
-    H2 = H_2lvl(2.d0, 0.d0, 1.d0)
-    call main(H2, size(H2, 1))
+    call lanczos(test, size(test, 1))
+
+    ! H2 = H_2lvl(2.d0, 0.d0, 1.d0)
+    ! call main(H2, size(H2, 1))
+    ! call lanczos(H2, size(H2, 1))
 
     ! H3 = H_3lvl(0.d0, 8.d-1, 5d-1, 0.d-8, 8.d-1, -5d-1)
     ! call main(H3, size(H3, 1))
+    ! call lanczos(H3, size(H3, 1))
 
     ! allocate(mol_H(N, N))
     ! mol_H = molecular_H(N, 10.d0, 5.d0, 2.d0, 2.01588d0)

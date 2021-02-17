@@ -1,39 +1,51 @@
-subroutine lanczos(H, N, psi)
+subroutine lanczos(H, N)
     implicit none
-    integer(kind=4) :: N
-    complex(kind=8) :: H(N, N), psi(N)
+    integer(kind=4) :: N, i
+    complex(kind=8) :: H(N, N), Hb(N, N)
 
-    call krilov(H, )
+    Hb = krilov(H, N)
+
+    do i=1, N
+        print*, Hb(i, :)
+    enddo
 
 contains
 
-    subroutine krilov
+    function krilov(H, N) result(Hb)
         implicit none
-        complex(kind=8) :: psi_m(N),psi_e(N), psi_p(N)
-        integer         :: i
+        integer(kind=4), intent(in) :: N
+        complex(kind=8), intent(in) :: H(N, N)
+        complex(kind=8)             :: Hb(N, N)
+        complex(kind=8)             :: psi(N, N + 1), alpha, beta, s(N)
+        integer                     :: i, j
 
-        psi_m = psi
-        psi_m = psi_m / norm(psi_m, N)
-        psi_e = matmul(H, psi_m) - dot_product(psi_m, mtmul(H, psi_m)) * psi_m
-        psi_e = psi_e / norm(psi_e, N)
-        psi_p = matmul(H, psi_e) - dot_product(psi_e, mtmul(H, psi_e)) * psi_e
-        psi_p = psi_p / norm(psi_p, N)
+        Hb = Hb * 0.d0
+        s = s * 0.d0
 
-        do i=1, N
-            H = dot_product(psi_m, mtmul(H, psi_e)) * psi_m &
-                            + dot_product(psi_e, mtmul(H, psi_e)) &
-                            * psi_e + dot_product(psi_p, mtmul(H, psi_e)) * psi_p
+        psi = psi * 0.d0
+        psi(1, 1) = 1.d0
+        
 
+        alpha = dot_product(psi(:, 1), matmul(H, psi(:, 1)))
+        Hb(1, 1) = alpha
+        psi(:, 2) = matmul(H, psi(:, 1)) - alpha * psi(:, 1)
+        psi(:, 2) = psi(:, 2) / norm(psi(:, 2), N)
 
-            psi_m = psi_e
-            psi_m = psi_m / norm(psi_m, N)
-            psi_e = psi_p
-            psi_e = psi_e / norm(psi_e, N)
-            psi_p = matmul(H, psi_e) - dot_product(psi_e, mtmul(H, psi_e)) * psi_e
-            psi_p = psi_p / norm(psi_p, N)
+        do i=1, N - 1
+            alpha = dot_product(psi(:, i + 1), matmul(H, psi(:, i + 1)))
+            Hb(i + 1, i + 1) = alpha
+            do j=1, i + 2
+                s = s + psi(:, j)
+            enddo
+            psi(:, i + 2) = matmul(H, psi(:, i + 1)) - alpha * s
+            psi(:, i + 2) = psi(:, i + 2) / norm(psi(:, i + 2), N)
+
+            beta  = dot_product(psi(:, i + 2), matmul(H, psi(:, i + 1)))
+            Hb(i, i + 1) = conjg(beta)
+            Hb(i + 1, i) = beta
         enddo
         
-    end subroutine krilov
+    end function krilov
 
     real(kind=8) function norm(v, dimv)
         implicit none
@@ -41,6 +53,10 @@ contains
         complex(kind=8) :: v(dimv)
 
         norm = sqrt(real(dot_product(v, v)))
+
+        if (norm == 0.) then
+            norm = 1.
+        endif
         
     end function norm
 
