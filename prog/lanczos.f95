@@ -1,13 +1,23 @@
 subroutine lanczos(H, N)
     implicit none
     integer(kind=4) :: N, i
-    complex(kind=8) :: H(N, N), Hb(N, N)
+    complex(kind=8) :: H(N, N), Hb(N, N), p(N + 1)
+    complex(kind=8) :: lambda, lambda_0
 
     Hb = krilov(H, N)
+
+    lambda = sum( (/ (real(Hb(i,i)), i=1, N) /) ) + 1d0
+    ! p = caract_polynomiale(Hb, N, lambda)
+    lambda_0 = dichotomy(p, Hb, N)
 
     do i=1, N
         print*, Hb(i, :)
     enddo
+
+    ! print*, " "
+    ! print*, p
+    print*, " "
+    print*, lambda_0
 
 contains
 
@@ -46,6 +56,67 @@ contains
         enddo
         
     end function krilov
+
+    function caract_polynomiale(H, N, lambda) result(p)
+        implicit none
+        integer(kind=4), intent(in) :: N
+        complex(kind=8), intent(in) :: H(N, N)
+        real(kind=8)                :: lambda
+        complex(kind=8)             :: p(N + 1)
+        integer                     :: i
+
+        p(1) = 1
+        p(2) = H(1, 1) - lambda
+
+        do i=3, N + 1
+            p(i) = (H(i - 1, i - 1) - lambda) * p(i - 1) - abs(H(i - 2, i - 1))**2 * p(i - 2)
+        enddo
+        
+    end function caract_polynomiale
+
+    function w(x, p, H, N) result(count)
+        implicit none
+        integer(kind=4), intent(in) :: N
+        real(kind=8), intent(in)    :: x
+        complex(kind=8)             :: p(N + 1), H(N, N)
+        integer(kind=4)             :: i, count
+
+        p = caract_polynomiale(H, N, x)
+        count = 0
+
+        do i=1, N
+            if (real(p(i + 1) / p(i)) < 0.d0) then
+                count = count + 1
+            endif
+        enddo
+        
+    end function w
+
+    function dichotomy(p, H, N) result(lambda_0)
+        implicit none
+        integer(kind=4), intent(in) :: N
+        complex(kind=8), intent(in) :: p(N + 1), H(N, N)
+        real(kind=8)                :: a, b, lambda_0
+        real(kind=8), parameter     :: eps = 1.d-8
+
+        a = -1.d2
+        b = 0.d0
+
+        ! do while (w(b, p, H, N) - w(a, p, H, N) /= 1)
+        !     b = (a + b) / 2.d0
+        ! enddo
+
+        do while ((b - a) > eps)
+            if (w((a + b) / 2.d0, p, H, N) - w(a, p, H, N) == 1) then
+                b = (a + b) / 2.d0
+            else
+                a = (a + b) / 2.d0
+            endif
+        enddo
+
+        lambda_0 = (a + b) / 2.d0
+
+    end function dichotomy
 
     real(kind=8) function norm(v, dimv)
         implicit none

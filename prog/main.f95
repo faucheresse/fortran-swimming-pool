@@ -4,17 +4,12 @@ implicit none
     ! complex(kind=8)              :: H3(3, 3)
     ! complex(kind=8), allocatable :: mol_H(:, :)
     ! integer, parameter           :: N = 2 !has to be positive
-    complex(kind=8) :: test(3, 3)
+    complex(kind=8) :: test(2, 2)
     
-    test(1, 1) = 1
-    test(1, 2) = 1
-    test(1, 3) = 1
-    test(2, 1) = 1
-    test(2, 2) = 1
-    test(2, 3) = 1
-    test(3, 1) = 1
-    test(3, 2) = 1
-    test(3, 3) = 1
+    test(1, 1) = 3
+    test(1, 2) = 2
+    test(2, 1) = 2
+    test(2, 2) = 3
 
     call lanczos(test, size(test, 1))
 
