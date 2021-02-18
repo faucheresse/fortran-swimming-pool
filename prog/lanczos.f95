@@ -99,7 +99,7 @@ contains
         real(kind=8)                :: a, b, lambda_0
         real(kind=8), parameter     :: eps = 1.d-8
 
-        a = -1.d2
+        a = -1.d10
         b = 0.d0
 
         ! do while (w(b, p, H, N) - w(a, p, H, N) /= 1)
