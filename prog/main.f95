@@ -6,12 +6,13 @@ implicit none
     ! integer, parameter           :: N = 2 !has to be positive
     complex(kind=8) :: test(2, 2)
     
-    test(1, 1) = 3
-    test(1, 2) = 2
-    test(2, 1) = 2
-    test(2, 2) = 3
+    test(1, 1) = -41. / 3.
+    test(1, 2) = 40. / 3.
+    test(2, 1) = -16. / 3. 
+    test(2, 2) = 11. / 3.
 
     call lanczos(test, size(test, 1))
+    ! call main(test, size(test, 1))
 
     ! H2 = H_2lvl(2.d0, 0.d0, 1.d0)
     ! call main(H2, size(H2, 1))

@@ -1,21 +1,19 @@
 subroutine lanczos(H, N)
     implicit none
     integer(kind=4) :: N, i
-    complex(kind=8) :: H(N, N), Hb(N, N), p(N + 1)
+    complex(kind=8) :: H(N, N), Hb(N, N)
     complex(kind=8) :: lambda, lambda_0
 
     Hb = krilov(H, N)
 
     lambda = sum( (/ (real(Hb(i,i)), i=1, N) /) ) + 1d0
     ! p = caract_polynomiale(Hb, N, lambda)
-    lambda_0 = dichotomy(p, Hb, N)
+    lambda_0 = dichotomy(Hb, N)
 
     do i=1, N
         print*, Hb(i, :)
     enddo
 
-    ! print*, " "
-    ! print*, p
     print*, " "
     print*, lambda_0
 
@@ -74,7 +72,7 @@ contains
         
     end function caract_polynomiale
 
-    function w(x, p, H, N) result(count)
+    function w(x, H, N) result(count)
         implicit none
         integer(kind=4), intent(in) :: N
         real(kind=8), intent(in)    :: x
@@ -92,29 +90,40 @@ contains
         
     end function w
 
-    function dichotomy(p, H, N) result(lambda_0)
+    function dichotomy(H, N) result(lambda_0)
         implicit none
         integer(kind=4), intent(in) :: N
-        complex(kind=8), intent(in) :: p(N + 1), H(N, N)
+        complex(kind=8), intent(in) :: H(N, N)
         real(kind=8)                :: a, b, lambda_0
         real(kind=8), parameter     :: eps = 1.d-8
+        integer, parameter          :: max_iter = 1000
+        integer                     :: iter
 
-        a = -1.d10
+        iter = 0
+
+        a = -1.d4
         b = 0.d0
 
-        ! do while (w(b, p, H, N) - w(a, p, H, N) /= 1)
-        !     b = (a + b) / 2.d0
-        ! enddo
-
-        do while ((b - a) > eps)
-            if (w((a + b) / 2.d0, p, H, N) - w(a, p, H, N) == 1) then
-                b = (a + b) / 2.d0
-            else
-                a = (a + b) / 2.d0
+        do while (w(b, H, N) - w(a, H, N) /= 1)
+            b = (a + b) / 2.d0
+            iter = iter + 1
+            if (iter == max_iter) then
+                print*, "The 'a' value is not negative or enought wide &
+                                    &or the matrix doesn't have a negative spectrum"
+                stop
             endif
         enddo
 
-        lambda_0 = (a + b) / 2.d0
+        do while (b - a > eps)
+            if (w((b + a) / 2.d0, H, N) - w(a, H, N) == 1) then
+                b = (b + a) / 2.d0
+            else
+                a = (b + a) / 2.d0
+            endif
+            print*, (b + a) / 2.d0
+        enddo
+
+        lambda_0 = (b + a) / 2.d0
 
     end function dichotomy
 
