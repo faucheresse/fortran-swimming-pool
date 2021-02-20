@@ -6,11 +6,11 @@ implicit none
     ! integer, parameter           :: N = 2 !has to be positive
     complex(kind=8) :: test(2, 2)
     
-    test(1, 1) = -41. / 3.
-    test(1, 2) = 40. / 3.
-    test(2, 1) = -16. / 3. 
-    test(2, 2) = 11. / 3.
-
+    test(1, 1) = -15.d0
+    test(1, 2) = 4.d0
+    test(2, 1) = -24.d0 
+    test(2, 2) = 5.d0
+    
     call lanczos(test, size(test, 1))
     ! call main(test, size(test, 1))
 

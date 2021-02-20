@@ -7,7 +7,6 @@ subroutine lanczos(H, N)
     Hb = krilov(H, N)
 
     lambda = sum( (/ (real(Hb(i,i)), i=1, N) /) ) + 1d0
-    ! p = caract_polynomiale(Hb, N, lambda)
     lambda_0 = dichotomy(Hb, N)
 
     do i=1, N
@@ -24,35 +23,35 @@ contains
         integer(kind=4), intent(in) :: N
         complex(kind=8), intent(in) :: H(N, N)
         complex(kind=8)             :: Hb(N, N)
-        complex(kind=8)             :: psi(N, N + 1), alpha, beta, s(N)
-        integer                     :: i, j
+        complex(kind=8)             :: psi(N, N + 1), s(N)
+        integer                     :: i, k
 
         Hb = Hb * 0.d0
-        s = s * 0.d0
 
         psi = psi * 0.d0
         psi(1, 1) = 1.d0
-        
 
-        alpha = dot_product(psi(:, 1), matmul(H, psi(:, 1)))
-        Hb(1, 1) = alpha
-        psi(:, 2) = matmul(H, psi(:, 1)) - alpha * psi(:, 1)
-        psi(:, 2) = psi(:, 2) / norm(psi(:, 2), N)
+        Hb(1, 1) = dot_product(psi(:, 1), matmul(H, psi(:, 1)))     
+
+        psi(:, 2) = matmul(H, psi(:, 1)) - dot_product(psi(:, 1), matmul(H, psi(:, 1))) * psi(:, 1)
+        psi(:, 2) = psi(:, 2) / norm(psi(:, 2), size(psi, 1))
 
         do i=1, N - 1
-            alpha = dot_product(psi(:, i + 1), matmul(H, psi(:, i + 1)))
-            Hb(i + 1, i + 1) = alpha
-            do j=1, i + 2
-                s = s + psi(:, j)
+            s = s * 0.d0
+            do k=1, i + 1
+                s = s + dot_product(psi(:, k), matmul(H, psi(:, i + 1))) * psi(:, k)
             enddo
-            psi(:, i + 2) = matmul(H, psi(:, i + 1)) - alpha * s
-            psi(:, i + 2) = psi(:, i + 2) / norm(psi(:, i + 2), N)
 
-            beta  = dot_product(psi(:, i + 2), matmul(H, psi(:, i + 1)))
-            Hb(i, i + 1) = conjg(beta)
-            Hb(i + 1, i) = beta
+            psi(:, i + 2) = matmul(H, psi(:, i + 1)) - s
+            psi(:, i + 2) = psi(:, i + 2) / norm(psi(:, i + 2), size(psi, 1))
+
+            Hb(i + 1, i + 1) = dot_product(psi(:, i + 1), matmul(H, psi(:, i + 1)))
+            Hb(i + 1, i) = dot_product(psi(:, i + 2), matmul(H, psi(:, i + 1)))
+            Hb(i, i + 1) = conjg(Hb(i + 1, i))
         enddo
-        
+        print*, psi(:, 3)
+        print*, ""
+
     end function krilov
 
     function caract_polynomiale(H, N, lambda) result(p)
@@ -120,7 +119,7 @@ contains
             else
                 a = (b + a) / 2.d0
             endif
-            print*, (b + a) / 2.d0
+            ! print*, (b + a) / 2.d0
         enddo
 
         lambda_0 = (b + a) / 2.d0
