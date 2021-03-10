@@ -1,9 +1,9 @@
 program pool
 implicit none
-    ! complex(kind=8)              :: H2(2, 2)
-    ! complex(kind=8)              :: H3(3, 3)
-    ! complex(kind=8), allocatable :: mol_H(:, :)
-    ! integer, parameter           :: N = 2 !has to be positive
+    complex(kind=8)              :: H2(2, 2)
+    complex(kind=8)              :: H3(3, 3)
+    complex(kind=8), allocatable :: mol_H(:, :)
+    integer, parameter           :: N = 2 !has to be positive
     complex(kind=8) :: test(3, 3)
     
     test(1, 1) = 51.5
@@ -15,22 +15,40 @@ implicit none
     test(3, 1) = -28.5
     test(3, 2) = -55.5
     test(3, 3) = -31.5
-    
+
+    print*, "Power iterative method :"
+    call main(test, size(test, 1))
+    print*, "Lanczos Algorithm :"
     call lanczos(test, size(test, 1))
-    ! call main(test, size(test, 1))
+    
 
-    ! H2 = H_2lvl(2.d0, 0.d0, 1.d0)
-    ! call main(H2, size(H2, 1))
-    ! call lanczos(H2, size(H2, 1))
+    print*, ""
 
-    ! H3 = H_3lvl(0.d0, 8.d-1, 5d-1, 0.d-8, 8.d-1, -5d-1)
-    ! call main(H3, size(H3, 1))
-    ! call lanczos(H3, size(H3, 1))
+    H2 = H_2lvl(2.d0, 0.d0, 1.d0)
+    print*, "Power iterative method :"
+    call main(H2, size(H2, 1))
+    print*, "Lanczos Algorithm :"
+    call lanczos(H2, size(H2, 1))
 
-    ! allocate(mol_H(N, N))
-    ! mol_H = molecular_H(N, 10.d0, 5.d0, 2.d0, 2.01588d0)
-    ! call main(mol_H, N)
-    ! deallocate(mol_H)
+    print*, ""
+
+    H3 = H_3lvl(0.d0, 8.d-1, 5d-1, 0.d-8, 8.d-1, -5d-1)
+    print*, "Power iterative method :"
+    call main(H3, size(H3, 1))
+    print*, "Lanczos Algorithm :"
+    call lanczos(H3, size(H3, 1))
+
+    print*, ""
+
+    allocate(mol_H(N, N))
+    mol_H = molecular_H(N, 10.d0, 2.01588d0)
+    mol_H = mol_H + molecular_potential(N, 10.d0, 5.d0, 2.d0)
+    ! mol_H = mol_H + box_potential(N, 10.d0)
+    ! mol_H = mol_H + ho_potential(N, 10.d0, -5.d-1)
+    print*, "Power iterative method :"
+    call main(mol_H, N)
+    print*, "Lanczos Algorithm :"
+    deallocate(mol_H)
 
 contains
 
@@ -101,11 +119,11 @@ contains
         
     end function H_3lvl
 
-    subroutine molecular_potential(N, L, V0, a, V)
+    function molecular_potential(N, L, V0, a)  result(V)
         implicit none
         integer, intent(in)          :: N
         real(kind=8), intent(in)     :: L, V0, a
-        complex(kind=8), intent(out) :: V(N, N)
+        complex(kind=8)              :: V(N, N)
         integer                      :: i
         real(kind=8)                 :: x(N)
 
@@ -116,16 +134,60 @@ contains
         enddo
 
         do i=1, N
-            V(i, i ) = V0 * (exp(-2 * a * x(i)) - 2 * exp(-a * x(i)))
+            V(i, i) = V0 * (exp(-2 * a * x(i)) - 2 * exp(-a * x(i)))
         enddo
         
-    end subroutine molecular_potential
+    end function molecular_potential
 
-    function molecular_H(N, L, V0, a, m) result(H)
+    function box_potential(N, L) result(V)
+        implicit none
+        integer, intent(in)          :: N
+        real(kind=8), intent(in)     :: L
+        complex(kind=8)              :: V(N, N)
+        integer                      :: i
+        real(kind=8)                 :: x(N)
+
+        V = V * 0.d0
+
+        do i=1, N
+            x(i) = (i - 1) * L / (N - 1)
+        enddo
+
+        do i=1, N
+            if (x(i) == 0. .or. x(i) == L) then
+                v(i, i) = 0.
+            else
+                v(i, i) = 10.d10
+            endif
+        enddo
+        
+    end function box_potential
+
+    function ho_potential(N, L, k) result(V)
+        implicit none
+        integer, intent(in)          :: N
+        real(kind=8), intent(in)     :: L, k
+        complex(kind=8)              :: V(N, N)
+        integer                      :: i
+        real(kind=8)                 :: x(N)
+
+        V = V * 0.d0
+
+        do i=1, N
+            x(i) = (i - 1) * L / (N - 1)
+        enddo
+
+        do i=1, N
+            v(i, i) = 1. / 2. * k * (x(i) - L / 2.)**2
+        enddo
+        
+    end function ho_potential
+
+    function molecular_H(N, L, m) result(H)
         implicit none
         integer(kind=4), intent(in)      :: N
-        real(kind=8), intent(in)         :: L, V0, a, m
-        complex(kind=8), dimension(N, N) :: H, V
+        real(kind=8), intent(in)         :: L, m
+        complex(kind=8), dimension(N, N) :: H
         real(kind=8), parameter          :: pi = 4 * atan(1.d0)
         integer                          :: i, j
 
@@ -140,8 +202,6 @@ contains
         enddo
 
         H = H / 2. / m
-        call molecular_potential(N, L, V0, a, V)
-        H = H + V
         
     end function molecular_H
 

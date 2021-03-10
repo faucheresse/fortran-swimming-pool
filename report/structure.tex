@@ -1,0 +1,140 @@
+%Texte et LuaLaTeX
+\usepackage{luatextra}
+\usepackage{polyglossia}
+\setmainfont{Libertinus Serif}
+% \setmainfont{Arial}
+\usepackage[locale=FR]{siunitx}
+\usepackage{booktabs}
+\usepackage{xspace}
+\usepackage{pict2e}
+\usepackage{fullpage}
+\usepackage{eso-pic}
+
+\setlength{\unitlength}{1cm}
+
+%Paramètres de langue
+\setdefaultlanguage{english}
+\setotherlanguage{french}
+
+% Marges du document
+\usepackage[lmargin=3cm, rmargin=2cm, vmargin=2.5cm]{geometry}
+
+% En-tête et pieds de page
+\iffalse
+\usepackage{fancyhdr}
+\pagestyle{fancy}
+\fancyhead[R]{\textsc{sous-titre}}
+\fancyhead[L]{Paradis Enzo}
+\renewcommand{\footrulewidth}{1pt}
+\fancyfoot[L]{catégorie}
+\fancyfoot[R]{\thepage}
+\fancyfoot[C]{}
+\setlength{\headheight}{15pt}
+\fi
+
+%Packages maths
+\usepackage{amsmath,amsfonts,amssymb,amsthm}
+\usepackage{unicode-math}
+%Autres
+\usepackage{graphicx} %Insertion d'images
+\usepackage{array}    %mise en forme tableau
+\usepackage{hyperref} %liens internes au document
+\usepackage{lipsum}   %lipsum
+\usepackage{caption}  %caption sans figure
+\usepackage{xcolor}
+\usepackage{enumitem}
+\usepackage{multicol}
+\usepackage{subcaption}
+\usepackage{tikz}
+\usepackage{bbold}
+\usepackage{appendix}
+\usepackage{booktabs}
+%code
+\usepackage{minted}
+
+%Optimisation
+\renewcommand{\arraystretch}{1.2}
+\renewcommand{\thesection}{\Roman{section}}
+
+\numberwithin{equation}{section} 
+
+\newcommand{\HRule}{\rule{\linewidth}{0.5mm}}
+\newcommand{\blap}[1]{\vbox to 0pt{#1\vss}}
+\newcommand{\f}[1]{\mintinline{fortran}{#1}}
+
+\newcommand\PlaceFigure[3]{%
+  \put(\LenToUnit{\dimexpr\paperwidth-#1},\LenToUnit{\dimexpr\paperheight-#2}){\blap{\llap{#3}}}%
+}
+
+\newcommand{\maketitlepage}{
+\begin{titlepage}
+
+% Add figure to titlepage
+%   \AddToShipoutPicture{
+%     }
+ 
+    \begin{center}
+        \huge\textbf{Numerical method to find the ground state of an Hamiltnian}\\
+        \large\textbf{Technical report for fortran numerical project}\\
+        \vspace*{0.5cm}
+        \large{Paradis Enzo}\\
+        Student at the university of Bourgogne Franche-Comté\\
+        Master CompuPhys - $1^{st}$ year\\
+        \vspace*{1cm}
+% You can add text here
+
+    \end{center}
+  
+ 
+\end{titlepage}
+\ClearShipoutPicture
+\newpage}
+
+\DeclareMathOperator{\e}{e}
+\renewcommand{\exp}[1]{\e^{#1}}
+\renewcommand{\vec}[1]{\overrightarrow{#1}}
+\newcommand{\deriv}[1]{\mathrm{d}#1\\}
+\newcommand{\moy}[1]{\ensuremath{\langle\;#1\;\rangle}\xspace}
+\newcommand{\real}{\mbox{I\hspace{-.15em}R}}
+\newcommand{\intg}{\mbox{I\hspace{-.15em}N}}
+\newcommand{\oone}{\mbox{I\hspace{-.60em}1}}
+\newcommand{\Ha}{\mathcal{H}}
+\newcommand{\colVec}[4]{
+    \begin{pmatrix} 
+      #1\\ 
+      #2\\
+      #3\\
+      #4
+    \end{pmatrix}}
+\newcommand{\rawVec}[4]{
+    \begin{pmatrix} 
+      #1 & #2 & #3 & #4
+    \end{pmatrix}}
+\newcommand*{\calVec}[4]{ 
+    \left\lvert
+      \begin{matrix} 
+        #1\\
+        #2\\
+        #3\\
+        #4
+      \end{matrix}  
+    \right.
+  }
+\newcommand{\derive}[2]{\dfrac{\deriv{#1}}{\deriv{#2}}}
+\newcommand{\partd}[2]{\dfrac{\partial #1}{\partial #2}}
+\newcommand{\ket}[1]{\ensuremath{|#1\rangle}\xspace}
+\newcommand{\bra}[1]{\ensuremath{\langle #1|}\xspace}
+\newcommand{\braket}[2]{\ensuremath{\langle #1 | #2 \rangle}\xspace}
+\newcommand{\Braket}[3]{\ensuremath{\bra{#1}#2\ket{#3}}\xspace}
+\newcommand{\abs}[1]{\ensuremath{\left|#1\right|}\xspace}
+  %
+\definecolor{couleur_lien}{RGB}{0, 102, 204}
+\definecolor{couleur_lien2}{RGB}{0, 0, 254}
+\hypersetup{
+    colorlinks=true,
+    linkcolor={couleur_lien2},
+    citecolor={couleur_lien2},
+    urlcolor={couleur_lien2}}
+
+\unimathsetup{math-style=TeX}
+\setmathfont{Libertinus Math}

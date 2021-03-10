@@ -1,0 +1,156 @@
+\documentclass[1pt, a4paper]{article}
+
+\input{structure.tex}
+
+
+\begin{document}
+\maketitlepage
+\tableofcontents
+\newpage
+\section{Introduction}
+\label{sec:intro}
+\noindent
+In quantum mechanics the eigenstates of an Hamiltonian are really important, especially the ground state. This state is the one that is the most populated and it's teh satrting point for the study of light-matter interaction. This program goals to find this ground state for any Hamiltonian by partially diagonalise the Hamiltonian. We will try to use the power iterative method and the Lanczos algorithm. This program was written in Fortran 95 under manjaro. There are 3 f95 files. The first one is \f{main.f95}, wich is the main file. If you want to add a new Hamiltonian or choose a method to diagonalise one, it's in this file. The second file is  \f{state.f95}, wich contains all the code for the power iterative method (in the subroutine \f{subroutine state}). You don't have to modify this file. And the third one is \f{lanczos.f95}, which contains the code for the Lanczos algorithm (in the subroutine \f{subroutine lanczos}). You don't have to modify this file but this part of the code don't work so you can try to improve it if you want. There is a file named \f{main} wich is the compile form of the program. You can find all these files on \href{https://github.com/faucheresse/fortran-swimming-pool.git}{github}.
+\section{Functional requirement of the program}
+\label{sec:2}
+\noindent
+In the main file, you can find the \f{program pool}. In this program there is the creation of Hamiltonians that we want to diagonalize and the called of subroutines for each method. There are already 3 functions for Hamiltonians. There is also an "Hamiltonian" named \f{test}, wich looks like an Hamiltonian for tests. So after creating the Hamiltonian wanted you can use the \f{subroutine main}, wich create initial data and call the \f{subroutine state}, or the \f{subroutine lanczos} or both.
+\subsection{Hamiltonians}
+\label{sub:ham}
+\noindent
+For this program we had created 3 functions for Hamiltonian. There are tables to describe them :
+\begin{table}[htbp]
+    \begin{center}
+        \begin{tabular}{p{0.3\linewidth} p{0.3\linewidth} p{0.3\linewidth}} \toprule
+            \multicolumn{3}{c}{\f{function H_2lvl(omega, phi, delta)}}\\
+            \midrule
+            \hfil Description & \hfil Input & \hfil Output\\
+            \cmidrule(r){1-1} \cmidrule{2-2} \cmidrule(l){3-3}
+           
+            This function retrieve a Hamiltonian for a 2 level atom interacting with laser fields.&
+            \vspace*{-8pt}
+            \begin{itemize}[leftmargin=15pt, itemsep=0pt, topsep=0pt]
+            \item \f{omega} : the laser amplitude multiplied by the atomic dipolar moment amplitude.
+            \item \f{phi} : the laser phase.
+            \item \f{delta} : the detuning.
+            \end{itemize}
+            &
+            This function will retrieve a 2x2 matrix.\\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+    \caption{\f{function H_2lvl}}
+    \label{tab:H2lvl}
+\end{table}
+\newpage\noindent
+\begin{table}[htbp]
+    \begin{center}
+        \begin{tabular}{p{0.3\linewidth} p{0.3\linewidth} p{0.3\linewidth}} \toprule
+            \multicolumn{3}{c}{\f{function H_3lvl(omega_p, phi_p, delta_p, omega_s, phi_s, delta_s)}}\\
+            \midrule
+            \hfil Description & \hfil Input & \hfil Output\\
+            \cmidrule(r){1-1} \cmidrule{2-2} \cmidrule(l){3-3}
+           
+            This function retrieve a Hamiltonian for a 3 level atom interacting with laser fields.&
+            The "p" is for pump mode and "s" for Stokes mode.
+            \begin{itemize}[leftmargin=15pt, itemsep=0pt, topsep=0pt]
+            \item \f{omega_p/omega_s} : the laser amplitude multiplied by the atomic dipolar moment amplitude.
+            \item \f{phi_p/phi_s} : the laser phase.
+            \item \f{delta_p/delta_s} : the detuning.
+            \end{itemize}
+            &
+            This function will retrieve a 3x3 matrix.\\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+    \caption{\f{function H_2lvl}}
+    \label{tab:H3lvl}
+\end{table}
+\begin{table}[htbp]
+    \begin{center}
+        \begin{tabular}{p{0.3\linewidth} p{0.3\linewidth} p{0.3\linewidth}} \toprule
+            \multicolumn{3}{c}{\f{function molecular_H(N, L, m)}}\\
+            \midrule
+            \hfil Description & \hfil Input & \hfil Output\\
+            \cmidrule(r){1-1} \cmidrule{2-2} \cmidrule(l){3-3}
+           
+            This function retrieve a molecular kinetic Hamiltonian.&
+            \vspace*{-8pt}
+            \begin{itemize}[leftmargin=15pt, itemsep=0pt, topsep=0pt]
+            \item \f{N} : number of particle (size of the Hamiltonian)
+            \item \f{L} : size of the molecule
+            \item \f{m} : mass of the molecule
+            \end{itemize}
+            &
+            This function will retrieve a NxN matrix, wich is diagonal.\\
+            \bottomrule
+        \end{tabular}
+    \end{center}
+    \caption{\f{function H_2lvl}}
+    \label{tab:mol_H}
+\end{table}
+After using the \f{function molecular_H} you have to add to it the wanted potential to the kinetic Hamiltonian (all of them are commented under the example call). There are three different potatentials.
+\begin{itemize}[leftmargin=15pt, itemsep=0pt, topsep=0pt]
+    \item Particle in a box (\f{function box_potential(N, L)})
+        \begin{equation}
+            V(x) = \left\{\begin{array}{ll}
+                            +\infty&if\;x=0\\
+                            0\;\quad&if\;x\in ]0,L[\\
+                            +\infty&if\;x=L
+                          \end{array}\right.
+        \end{equation}
+    \item Harmonic oscillator (\f{function ho_potential(N, L, k)})
+        \begin{equation}
+            V(x) = \dfrac{1}{2}k\left(x - \dfrac{L}{2}\right)^2
+        \end{equation}
+    \item Vibration of the $H_2^+$ molecule (\f{function molecular_potential(N, L, V0, a)})
+        \begin{equation}
+            V(x) = V_0\left(\e^{-2a(x-x_0)} - 2\e^{a(x-x_0)}\right)
+        \end{equation}
+\end{itemize}
+\newpage
+\section{Internal structure of the program}
+\label{sec:3}
+\noindent
+
+
+% \begin{table}[htbp]
+%     \begin{center}
+%         \begin{tabular}{p{0.3\linewidth} p{0.3\linewidth} p{0.3\linewidth}} \toprule
+%             \multicolumn{3}{c}{\py{name}}\\
+%             \midrule
+%             \hfil Description & \hfil Input & \hfil Output\\
+%             \cmidrule(r){1-1} \cmidrule{2-2} \cmidrule(l){3-3}
+           
+%             This function computes the Shannon entropy over time of $\theta$. So for each vector of the list of vectors \py{theta}&
+            % \vspace*{-8pt}
+            % \begin{itemize}[leftmargin=15pt, itemsep=0pt, topsep=0pt]
+                % \setlength{\itemsep}{0pt}
+                % \item \py{"random"}
+                % \item \py{"chimera"}
+                % \item \py{"inverse"}
+                % \item \py{"josephson"}
+                % \end{itemize}
+%             &
+%             This function will retrieve two data files in the parameters directory.
+%             \begin{itemize}[leftmargin=15pt, itemsep=0pt, topsep=0pt]
+%                 \item \py{"S.dat"} : It contains a list of real of size T. \py{S} represents the Shannon entropy over time of each vector of \py{theta}
+%             \end{itemize}\\
+%             \bottomrule
+%         \end{tabular}
+%     \end{center}
+%     \caption{function}
+%     \label{tab:label}
+% \end{table}
+
+% \begin{figure}[htbp]
+%     \centering
+%     \includegraphics[width=.95\linewidth]{../outcomes/josephson/phase.png}
+%     \caption{Complex mean of phase josephson arrays}
+%     \label{fig:phase_j}
+% \end{figure}
+
+% \newpage
+% \bibliographystyle{plain}
+% \bibliography{biblio}
+\end{document}

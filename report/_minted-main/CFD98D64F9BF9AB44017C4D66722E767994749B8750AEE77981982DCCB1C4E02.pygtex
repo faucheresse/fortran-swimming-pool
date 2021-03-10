@@ -1,0 +1,3 @@
+\begin{Verbatim}[commandchars=\\\{\}]
+\PYG{k}{function }\PYG{n}{box\PYGZus{}potential}\PYG{p}{(}\PYG{n}{N}\PYG{p}{,} \PYG{n}{L}\PYG{p}{)}
+\end{Verbatim}
