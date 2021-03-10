@@ -3,3 +3,5 @@
 \contentsline {section}{\numberline {II}Functional requirement of the program}{2}{section.2}%
 \contentsline {subsection}{\numberline {II.1}Hamiltonians}{2}{subsection.2.1}%
 \contentsline {section}{\numberline {III}Internal structure of the program}{4}{section.3}%
+\contentsline {subsection}{\numberline {III.1}Description of the diagonalization algorithms}{4}{subsection.3.1}%
+\contentsline {subsubsection}{\numberline {III.1.1}The power method algorithm}{4}{subsubsection.3.1.1}%

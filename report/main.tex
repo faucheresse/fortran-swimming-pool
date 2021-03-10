@@ -112,6 +112,67 @@ After using the \f{function molecular_H} you have to add to it the wanted potent
 \section{Internal structure of the program}
 \label{sec:3}
 \noindent
+\subsection{Description of the diagonalization algorithms}
+\label{sub:diag}
+\noindent
+\subsubsection{The power method algorithm}
+\label{subs:pow}
+\noindent
+The power method algorithm consist to apply a matrix to a vector an infinite number of time. So to find the eigenvector we have :
+\begin{equation}
+\label{eq:eig}
+    \ket{\phi_0} = H^{\infty}\ket{\psi}
+\end{equation}
+With $H$ the matrix we want to diagonalize, $\ket{\phi_0}$ the eigenvector ans $\ket{\psi}$ a random vector. So the associated eigenvalue, $\lambda_i$, is $\lambda_i = \Braket{\phi_0}{M}{\phi_0}$.\\
+But we can't apply an infinite number of time a matrix to a vector. So we will transform a little the \autoref{eq:eig} and for the numerical calculation add a condition to stop before the infinity. We rewrite the \autoref{eq:eig} as :
+\begin{equation}
+    \lim_{k\rightarrow +\infty} \dfrac{H^k\ket{\psi}}{||H^k\ket{\psi}||} = \ket{\phi_0}
+\end{equation}
+In our case $H$ is a Hamiltonian, so it is a hermitian matrix with a negative spectrum. And we want to find the ground state which is the lowest eigenvalue of $H$. The lowest eigenvalue is $\lambda_0 = \Braket{\phi_0}{H}{\phi_0}$. So we will stop the computation when :
+\begin{equation}
+    ||H\ket{\phi_0} - \Braket{\phi_0}{H}{\phi_0}\ket{\phi_0}|| > \epsilon
+\end{equation}
+It is when the lowest eigenvalue it is a solution of the eigenequation for the ground state. With that we can write a pseudo-code to find the ground state.\\
+\hrule
+\noindent
+\\
+take a random vector $\phi_0$\\
+normalize $\phi_0$\\
+$H \leftarrow H - shift * id$\\
+while $||H\phi_0 - \Braket{\phi_0}{H}{\phi 0}\phi_0|| > \epsilon$ and $k\leq k_{max}$ do\\
+$\quad \phi_0 \leftarrow H\phi_0$\\
+$\quad$ normalize $\phi_0$\\
+$\quad k \leftarrow k + 1$\\
+end while\\
+$H \leftarrow H + shift * id$\\
+$\lambda_0 \leftarrow \Braket{\phi_0}{H}{\phi_0}$\\
+\hrule
+\noindent
+\\
+$shift$ is a shift value to ensure a negative spectrum.\\
+By using this method we can also find the first exited state by projecting onto an ortogonal component to avoid non-zero component from $\phi_0$ appearig into $\phi_1$. So we can write the following pseudo-code :\\
+\hrule
+\noindent
+\\
+take a random vector $\phi_1$\\
+$\phi_1 \leftarrow \phi_1 - \braket{\phi_0}{\phi_1}\phi_0$\\
+normalize $\phi_1$\\
+$H \leftarrow H - shift * id$\\
+while $||H\phi_0 - \Braket{\phi_1}{H}{\phi 1}\phi_1|| > \epsilon$ and $k\leq k_{max}$ do\\
+$\quad \phi_1 \leftarrow H\phi_1$\\
+$\quad\phi_1 \leftarrow \phi_1 - \braket{\phi_0}{\phi_1}\phi_0$\\
+$\quad$ normalize $\phi_1$\\
+$\quad k \leftarrow k + 1$\\
+end while\\
+$H \leftarrow H + shift * id$\\
+$\lambda_1 \leftarrow \Braket{\phi_1}{H}{\phi_1}$\\
+\hrule
+\noindent
+\newpage\noindent
+After that $phi_0$ is the ground state and $\phi_1$ is the first exited state, $\lambda_0$ and $\lambda_1$ are the associated eigenvalues.
+\subsubsection{The Lanczos algorithm}
+\label{subs:lanczos}
+\noindent
 
 
 % \begin{table}[htbp]
