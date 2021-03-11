@@ -24,31 +24,31 @@ implicit none
 
     print*, ""
 
-    H2 = H_2lvl(2.d0, 0.d0, 1.d0)
-    print*, "Power iterative method :"
-    call main(H2, size(H2, 1))
-    print*, "Lanczos Algorithm :"
-    call lanczos(H2, size(H2, 1))
+    ! H2 = H_2lvl(2.d0, 0.d0, 1.d0)
+    ! print*, "Power iterative method :"
+    ! call main(H2, size(H2, 1))
+    ! print*, "Lanczos Algorithm :"
+    ! call lanczos(H2, size(H2, 1))
 
-    print*, ""
+    ! print*, ""
 
-    H3 = H_3lvl(0.d0, 8.d-1, 5d-1, 0.d-8, 8.d-1, -5d-1)
-    print*, "Power iterative method :"
-    call main(H3, size(H3, 1))
-    print*, "Lanczos Algorithm :"
-    call lanczos(H3, size(H3, 1))
+    ! H3 = H_3lvl(0.d0, 8.d-1, 5d-1, 0.d-8, 8.d-1, -5d-1)
+    ! print*, "Power iterative method :"
+    ! call main(H3, size(H3, 1))
+    ! print*, "Lanczos Algorithm :"
+    ! call lanczos(H3, size(H3, 1))
 
-    print*, ""
+    ! print*, ""
 
-    allocate(mol_H(N, N))
-    mol_H = molecular_H(N, 10.d0, 2.01588d0)
-    mol_H = mol_H + molecular_potential(N, 10.d0, 5.d0, 2.d0)
-    ! mol_H = mol_H + box_potential(N, 10.d0)
-    ! mol_H = mol_H + ho_potential(N, 10.d0, -5.d-1)
-    print*, "Power iterative method :"
-    call main(mol_H, N)
-    print*, "Lanczos Algorithm :"
-    deallocate(mol_H)
+    ! allocate(mol_H(N, N))
+    ! mol_H = molecular_H(N, 10.d0, 2.01588d0)
+    ! mol_H = mol_H + molecular_potential(N, 10.d0, 5.d0, 2.d0)
+    ! ! mol_H = mol_H + box_potential(N, 10.d0)
+    ! ! mol_H = mol_H + ho_potential(N, 10.d0, -5.d-1)
+    ! print*, "Power iterative method :"
+    ! call main(mol_H, N)
+    ! print*, "Lanczos Algorithm :"
+    ! deallocate(mol_H)
 
 contains
 
