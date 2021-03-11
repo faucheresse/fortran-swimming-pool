@@ -220,8 +220,40 @@ $\lambda^{(n)}_0 \leftarrow (a + b) / 2$\\
 \\
 The function $\omega(\lambda)$ is the number of sign changes in the sequence $(p_k(\lambda))_{k\in \{0,\dots,n\}}$. The number of sign changes give the number of eigenvalues between $0$ and $\lambda$, because $\lambda$ is an eigenvalue if one element of the sequence $(p_k(\lambda))_{k\in \{0,\dots,n\}}$ is null, so when there is a sign change between two consecutives elements of this sequence that mean that there is an eigenvalue between them. So $\omega(b)-\omega(a)$ give the number of eigenvalues into $[a, b]$.\\
 So the previous algorithm try to find the eigenvalue by tightening $[a, b]$ around it and keep only one eigenvalue. $b$ is null because we want a negative eigenvalue because we diagonalize a Hamiltonian. So $a$ as to be enough small.
- 
 \newpage\noindent
+Then, to find the ground state $\phi^{(n)}_0$ we have to study the convergence of the sequence $\left(\left(H_{B^n}-(\lambda_0^{(n)} - 1)id\right)^k\psi_0\right)_{k\in\intg}$. But we must not forget that $\phi^{(n)}_0$ is expressed in the $\mathcal{B}^n$ basis so we have to come back to the initial basis at the end of the computation.
+\section{Quality approach, reliability of the program}
+\label{sec:qual}
+\noindent
+For the quality approach it was planned that we compare the running time and the precision of the power iteration method and the Lanczos algorithm. But, unfortunately, the Lanczos algorithm could not be finished. The coded algorithm doesn't provide the wanted results for an unknow reason. Because of verifications done on each part of the algorithm with hand-computed solutions. It seems that we misunderstood something in the algorithm because the results are similar of what we were expecting with the hand-computed solutions.
+\subsection{Code verifications}
+\label{sub:verif}
+So the verification of the program was by using a matrix created by hand. So the program is suppose to return the lowest eigenvalue of a matrix with negative spectra (In the case of the power iterative method there is also the first exited state).  So we took a diagonal matrix $A$ of size $3x3$, to see the two lowest eigenvalues, with negative spectra. Then we change its basis :
+\begin{equation}
+    \begin{aligned}
+        A &= \begin{pmatrix}
+            -3 & 0 & 0\\
+            0 & -2 & 0 \\
+            0 & 0 & -7
+        \end{pmatrix},\quad B = \begin{pmatrix}
+                                3 & 9 & 1\\
+                                2&4&2\\
+                                3&5&3
+                            \end{pmatrix}\\
+        B^{-1}AB &= \begin{pmatrix}
+                        51.5&105.5&54.5\\
+                        -15&-32&-25\\
+                        -28.5&-55.5&-31.5
+                    \end{pmatrix}
+    \end{aligned}
+\end{equation}
+So we gave to the program the matrix $B^{-1}AB$ and it gives us $-2$ and $-3$, wich are the lowest eigenvalues of $A$ sorted.\\
+When we do this with the Lanczos algorithm it doesn't work, that is how we saw that there were an error.
+\section{Physical study}
+\label{sec:study}
+\noindent
+
+\newpage
 \section{Appendix}
 \label{app:app}
 \subsection{Proof of the relation for the caracteristic polynomial}

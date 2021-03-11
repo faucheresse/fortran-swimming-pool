@@ -1,4 +1,4 @@
-This is LuaHBTeX, Version 1.12.0 (TeX Live 2020/Arch Linux)  (format=lualatex 2021.3.9)  11 MAR 2021 20:25
+This is LuaHBTeX, Version 1.12.0 (TeX Live 2020/Arch Linux)  (format=lualatex 2021.3.9)  11 MAR 2021 22:52
  system commands enabled.
 **main.tex
 (./main.tex
@@ -523,12 +523,12 @@ braces):
 >  {french/localnumeral}  =>  {polyglossia@C@localnumeral}
 >  {french/Localnumeral}  =>  {polyglossia@C@localnumeral}.
 Module polyglossia Info: Language data for french
-(polyglossia)            righthyphenmin	2
 (polyglossia)            hyphenation	
 (polyglossia)            loader	loadhyph-fr.tex
-(polyglossia)            lefthyphenmin	2
+(polyglossia)            patterns	hyph-fr.pat.txt
 (polyglossia)            synonyms	patois,francais
-(polyglossia)            patterns	hyph-fr.pat.txt on input line 12
+(polyglossia)            righthyphenmin	2
+(polyglossia)            lefthyphenmin	2 on input line 12
 Module polyglossia Info: Language french was not yet loaded; created with id 2 o
 n input line 12
 Lua-only attribute polyglossia_punct = 4
@@ -1812,12 +1812,19 @@ Underfull \hbox (badness 10000) in paragraph at lines 206--218
  []
 
 [5]
-Underfull \hbox (badness 10000) in paragraph at lines 253--258
+Overfull \hbox (4.53944pt too wide) in paragraph at lines 223--225
+\TU/LibertinusSerif(0)/m/n/10 Then, to find the ground state $\TU/LibertinusMat
+h(1)/m/n/10 𝜙[]$ \TU/LibertinusSerif(0)/m/n/10 we have to study the con-ver-g
+ence of the se-quence $[][]$.
+ []
+
+[6]
+Underfull \hbox (badness 10000) in paragraph at lines 285--290
 
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 290--295
+Underfull \hbox (badness 10000) in paragraph at lines 322--327
 
  []
 
@@ -1871,26 +1878,26 @@ braces):
 >  {french/babelname}  =>  {french}
 >  {french/localnumeral}  =>  {polyglossia@C@localnumeral}
 >  {french/Localnumeral}  =>  {polyglossia@C@localnumeral}.
-[6] (./main.aux
+[7] (./main.aux
 LaTeX Info: Redefining \rmfamily on input line 19.
 LaTeX Info: Redefining \sffamily on input line 19.
 LaTeX Info: Redefining \ttfamily on input line 19.
 )
 Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 0F40FCE18A4B458CBC0ADCC5EFA744DA;1789.
+(rerunfilecheck)             Checksum: E7C3B2833BDB640D991735CC11753583;2336.
 runsystem(rm main.pyg)...executed
 )
 
 Here is how much of LuaTeX's memory you used:
- 37719 strings out of 478903
+ 37730 strings out of 478903
  156344,1373583 words of node,token memory allocated
- 693 words of node memory still in use:
-   6 hlist, 2 vlist, 2 rule, 3 glue, 5 kern, 1 penalty, 1 glyph, 35 attribute, 6
-7 glue_spec, 35 attribute_list, 2 write nodes
-   avail lists: 1:1,2:862,3:300,4:113,5:514,6:58,7:5752,8:56,9:1032,10:13,11:304
+ 701 words of node memory still in use:
+   6 hlist, 2 vlist, 2 rule, 3 glue, 5 kern, 1 penalty, 1 glyph, 37 attribute, 6
+7 glue_spec, 37 attribute_list, 2 write nodes
+   avail lists: 1:1,2:858,3:300,4:113,5:508,6:58,7:5752,8:56,9:1032,10:13,11:304
 
- 55278 multiletter control sequences out of 65536+600000
- 82 fonts using 30149791 bytes
+ 55284 multiletter control sequences out of 65536+600000
+ 82 fonts using 30149959 bytes
  98i,14n,115p,1374b,774s stack positions out of 5000i,500n,10000p,200000b,100000s
 </usr/share/texmf-dist/fonts/opentype/public/libertinus-fonts/LibertinusMath-Reg
 ular.otf></usr/share/texmf-dist/fonts/opentype/public/lm/lmmonolt10-bold.otf></u
@@ -1900,10 +1907,10 @@ xmf-dist/fonts/opentype/public/libertinus-fonts/LibertinusMath-Regular.otf></usr
 otf></usr/share/texmf-dist/fonts/opentype/public/libertinus-fonts/LibertinusSeri
 f-Regular.otf></usr/share/texmf-dist/fonts/opentype/public/libertinus-fonts/Libe
 rtinusSerif-Bold.otf>
-Output written on main.pdf (7 pages, 57858 bytes).
+Output written on main.pdf (8 pages, 62711 bytes).
 
-PDF statistics: 164 PDF objects out of 1000 (max. 8388607)
- 130 compressed objects within 2 object streams
- 33 named destinations out of 1000 (max. 131072)
- 88 words of extra memory for PDF output out of 10000 (max. 100000000)
+PDF statistics: 184 PDF objects out of 1000 (max. 8388607)
+ 149 compressed objects within 2 object streams
+ 38 named destinations out of 1000 (max. 131072)
+ 112 words of extra memory for PDF output out of 10000 (max. 100000000)
 
