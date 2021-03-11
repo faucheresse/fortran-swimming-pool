@@ -5,3 +5,6 @@
 \contentsline {section}{\numberline {III}Internal structure of the program}{4}{section.3}%
 \contentsline {subsection}{\numberline {III.1}Description of the diagonalization algorithms}{4}{subsection.3.1}%
 \contentsline {subsubsection}{\numberline {III.1.1}The power method algorithm}{4}{subsubsection.3.1.1}%
+\contentsline {subsubsection}{\numberline {III.1.2}The Lanczos algorithm}{5}{subsubsection.3.1.2}%
+\contentsline {section}{\numberline {IV}Appendix}{6}{section.4}%
+\contentsline {subsection}{\numberline {IV.1}Proof of the relation for the caracteristic polynomial}{6}{subsection.4.1}%

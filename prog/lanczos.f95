@@ -18,8 +18,8 @@ contains
 
     subroutine krilov
         implicit none
-        complex(kind=8)             :: psi(N, N + 1), s(N)
-        integer                     :: i, k
+        complex(kind=8) :: psi(N, N + 1), s(N)
+        integer         :: i, k
 
         Hb = Hb * 0.d0
 
@@ -49,10 +49,10 @@ contains
 
     subroutine dichotomy
         implicit none
-        real(kind=8)                 :: a, b
-        real(kind=8), parameter      :: eps = 1.d-8
-        integer, parameter           :: max_iter = 1000
-        integer                      :: iter
+        real(kind=8)            :: a, b
+        real(kind=8), parameter :: eps = 1.d-8
+        integer, parameter      :: max_iter = 1000
+        integer                 :: iter
 
         iter = 0
 
@@ -98,9 +98,9 @@ contains
 
     function w(x) result(count)
         implicit none
-        real(kind=8), intent(in)    :: x
-        complex(kind=8)             :: p(N + 1)
-        integer(kind=4)             :: i, count
+        real(kind=8), intent(in) :: x
+        complex(kind=8)          :: p(N + 1)
+        integer(kind=4)          :: i, count
 
         p = caract_polynomial(x)
         count = 0
