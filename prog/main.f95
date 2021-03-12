@@ -1,64 +1,82 @@
 program pool
 implicit none
-    ! complex(kind=8)              :: H2(2, 2)
-    integer :: i
+    complex(kind=8)              :: H2(2, 2)
+    ! integer                      :: i
     complex(kind=8)              :: H3(3, 3)
-    ! complex(kind=8), allocatable :: mol_H(:, :)
-    ! integer, parameter           :: N = 3 !has to be positive
-    ! complex(kind=8) :: test(3, 3)
+    complex(kind=8), allocatable :: mol_H(:, :)
+    integer, parameter           :: N = 3 !has to be positive
+    complex(kind=8)              :: test(3, 3)
     
-    ! test(1, 1) = 51.5
-    ! test(1, 2) = 105.5
-    ! test(1, 3) = 54.5
-    ! test(2, 1) = -15. 
-    ! test(2, 2) = -32.
-    ! test(2, 3) = -15.
-    ! test(3, 1) = -28.5
-    ! test(3, 2) = -55.5
-    ! test(3, 3) = -31.5
+    test(1, 1) = 51.5
+    test(1, 2) = 105.5
+    test(1, 3) = 54.5
+    test(2, 1) = -15. 
+    test(2, 2) = -32.
+    test(2, 3) = -15.
+    test(3, 1) = -28.5
+    test(3, 2) = -55.5
+    test(3, 3) = -31.5
 
-    ! print*, "Power iterative method :"
-    ! call main(test, size(test, 1))
-    ! print*, "Lanczos Algorithm :"
-    ! call lanczos(test, size(test, 1))
+    print*, "Power iterative method :"
+    call main(test, size(test, 1))
+    print*, "Lanczos Algorithm :"
+    call lanczos(test, size(test, 1))
     
 
-    ! print*, ""
-    ! H2 = H_2lvl(i/10000.d0, 0.d0, 1.d0)
-    ! print*, "Power iterative method :"
-    ! call main(H2, size(H2, 1), i/10000.d0)
-    ! print*, "Lanczos Algorithm :"
-    ! call lanczos(H2, size(H2, 1))
+    ! do i=0, 1600
+    !     H2 = H_2lvl(i/50.d0, 0.d0, 1.d0)
+    !     call main(H2, size(H2, 1), i/50.d0)
+    ! enddo
 
-    ! print*, ""
+    print*, ""
+    H2 = H_2lvl(1.d0, 0.d0, 1.d0)
+    print*, "Power iterative method :"
+    call main(H2, size(H2, 1))
+    print*, "Lanczos Algorithm :"
+    call lanczos(H2, size(H2, 1))
 
-    ! H3 = H_3lvl(0.d0, 8.d-1, 5d-1, 0.d0, 8.d-1, -5d-1)
-    ! print*, "Power iterative method :"
-    ! call main(H3, size(H3, 1))
-    ! print*, "Lanczos Algorithm :"
-    ! call lanczos(H3, size(H3, 1))
+    print*, ""
 
-    ! print*, ""
+    ! do i=0, 6400
+    !     H3 = H_3lvl(i/50.d0, 8.d-1, 5d-1, i/50.d0, 8.d-1, -5d-1)
+    !     call main(H3, size(H3, 1), i/50.d0)
+    ! enddo
+
+    H3 = H_3lvl(0.d0, 8.d-1, 5d-1, 0.d0, 8.d-1, -5d-1)
+    print*, "Power iterative method :"
+    call main(H3, size(H3, 1))
+    print*, "Lanczos Algorithm :"
+    call lanczos(H3, size(H3, 1))
+
+    print*, ""
 
     ! allocate(mol_H(N, N))
-    ! mol_H = molecular_H(N, 10.d0, 2.01588d0)
-    ! mol_H = mol_H + molecular_potential(N, 10.d0, 5.d0, 2.d0)
-    ! ! mol_H = mol_H + box_potential(N, 10.d0)
-    ! ! mol_H = mol_H + ho_potential(N, 10.d0, -5.d-1)
-    ! print*, "Power iterative method :"
-    ! call main(mol_H, N)
-    ! ! print*, "Lanczos Algorithm :"
-    ! ! call lanczos(mol_H, N)
+    ! do i=0, 500
+    !     mol_H = molecular_H(N, i/100.d0, 2.01588d0)
+    !     mol_H = mol_H + molecular_potential(N, i/100.d0, 10.d0, 100.d0)
+    !     call main(mol_H, size(mol_H, 1), i/100.d0)
+    ! enddo
     ! deallocate(mol_H)
+
+    allocate(mol_H(N, N))
+    mol_H = molecular_H(N, 10.d0, 2.01588d0)
+    mol_H = mol_H + molecular_potential(N, 10.d0, 5.d0, 2.d0)
+    ! mol_H = mol_H + box_potential(N, 10.d0)
+    ! mol_H = mol_H + ho_potential(N, 10.d0, -5.d-1)
+    print*, "Power iterative method :"
+    call main(mol_H, N)
+    ! print*, "Lanczos Algorithm :"
+    ! call lanczos(mol_H, N)
+    deallocate(mol_H)
 
 contains
 
-    subroutine main(H, dim, om)
+    subroutine main(H, dim)
         implicit none
         integer                      :: dim, i
         complex(kind=8)              :: H(dim, dim)
         real(kind=8)                 :: shift
-        real(kind=8)                 :: eig_0, eig_1, om
+        real(kind=8)                 :: eig_0, eig_1
         complex(kind=8), allocatable :: phi0(:), phi1(:)
         logical                      :: conv_0, conv_1
 
@@ -78,12 +96,10 @@ contains
 
         call state(size(H, 1), H, shift, 1d-8, 1d3, phi0, eig_0, conv_0, phi1, eig_1, conv_1)
 
-        open(unit=10, file="data_H3.dat",position="append")
+        ! open(unit=10, file="data_Hmol.dat",position="append")
 
-        write(10, *) om, real(phi0)
-        close(10)
-
-
+        ! write(10, *) om, abs(phi0)**2
+        ! close(10)
 
         deallocate(phi0)
         deallocate(phi1)

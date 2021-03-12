@@ -15,6 +15,19 @@ In quantum mechanics the eigenstates of an Hamiltonian are really important, esp
 \label{sec:2}
 \noindent
 In the main file, you can find the \f{program pool}. In this program there is the creation of Hamiltonians that we want to diagonalize and the called of subroutines for each method. There are already 3 functions for Hamiltonians. There is also an "Hamiltonian" named \f{test}, wich looks like an Hamiltonian for tests. So after creating the Hamiltonian wanted you can use the \f{subroutine main}, wich create initial data and call the \f{subroutine state}, or the \f{subroutine lanczos} or both.
+\subsection{Compilation and execution}
+\label{sub:comp}
+\noindent
+The compilation of the program has been done using :
+\begin{minted}{bash}
+    gfortran -Wall *.f95 -o main 2> /dev/null
+    gfortran -Wall *.f95 -o main
+\end{minted}
+and the execution has done as :
+\begin{minted}{bash}
+    ./main > results 2> results
+\end{minted}
+Using this method you can find the printed results inside the results file.
 \subsection{Hamiltonians}
 \label{sub:ham}
 \noindent
@@ -140,9 +153,9 @@ take a random vector $\phi_0$\\
 normalize $\phi_0$\\
 $H \leftarrow H - shift * id$\\
 while $||H\phi_0 - \Braket{\phi_0}{H}{\phi 0}\phi_0|| > \epsilon$ and $k\leq k_{max}$ do\\
-$\quad \phi_0 \leftarrow H\phi_0$\\
-$\quad$ normalize $\phi_0$\\
-$\quad k \leftarrow k + 1$\\
+$~~~~~~~~\phi_0 \leftarrow H\phi_0$\\
+$~~~~~~~~$ normalize $\phi_0$\\
+$~~~~~~~~ k \leftarrow k + 1$\\
 end while\\
 $H \leftarrow H + shift * id$\\
 $\lambda_0 \leftarrow \Braket{\phi_0}{H}{\phi_0}$\\
@@ -159,10 +172,10 @@ $\phi_1 \leftarrow \phi_1 - \braket{\phi_0}{\phi_1}\phi_0$\\
 normalize $\phi_1$\\
 $H \leftarrow H - shift * id$\\
 while $||H\phi_0 - \Braket{\phi_1}{H}{\phi 1}\phi_1|| > \epsilon$ and $k\leq k_{max}$ do\\
-$\quad \phi_1 \leftarrow H\phi_1$\\
-$\quad\phi_1 \leftarrow \phi_1 - \braket{\phi_0}{\phi_1}\phi_0$\\
-$\quad$ normalize $\phi_1$\\
-$\quad k \leftarrow k + 1$\\
+$~~~~~~~~ \phi_1 \leftarrow H\phi_1$\\
+$~~~~~~~~\phi_1 \leftarrow \phi_1 - \braket{\phi_0}{\phi_1}\phi_0$\\
+$~~~~~~~~$ normalize $\phi_1$\\
+$~~~~~~~~ k \leftarrow k + 1$\\
 end while\\
 $H \leftarrow H + shift * id$\\
 $\lambda_1 \leftarrow \Braket{\phi_1}{H}{\phi_1}$\\
@@ -208,11 +221,11 @@ You can find the proof of this relation in \autoref{app:pol}. To find the lowest
 $b\leftarrow 0$\\
 while $\omega(b)-\omega(a)\ne 1$ do $b\leftarrow (a + b)/2$\\
 while $(b-a) > \epsilon$ do\\
-$\quad$ if $\omega ((b+a)/2) - \omega(a) = 1$\\
-$\qquad b\leftarrow (a + b)/2$\\
-$\quad$ else\\
-$\qquad a\leftarrow (a + b)/2$\\
-$\quad$ end if\\
+$~~~~~~~~$ if $\omega ((b+a)/2) - \omega(a) = 1$\\
+$~~~~~~~~~~~~~~~~ b\leftarrow (a + b)/2$\\
+$~~~~~~~~$ else\\
+$~~~~~~~~~~~~~~~~ a\leftarrow (a + b)/2$\\
+$~~~~~~~~$ end if\\
 end while\\
 $\lambda^{(n)}_0 \leftarrow (a + b) / 2$\\
 \hrule
@@ -252,7 +265,35 @@ When we do this with the Lanczos algorithm it doesn't work, that is how we saw t
 \section{Physical study}
 \label{sec:study}
 \noindent
-
+For the physical study we draw the population (using the squared absolute value of the wavefunction) of the 2 and 3 level atom interacting with laser fields, according to $\Omega$ (the laser amplitude multiplied by the atomic dipolar moment amplitude). So for the 2 level one :
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=.70\linewidth]{wavefunction_H2.pdf}
+    \caption{Population of a 2 level atom interacting with laser fields according to $\Omega$}
+    \label{fig:H2LVL}
+\end{figure}
+\newpage
+and the 3 level one :
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=.70\linewidth]{wavefunction_H3.pdf}
+    \caption{Population of a 3 level atom interacting with laser fields according to $\Omega$}
+    \label{fig:H3LVL}
+\end{figure}\\
+In the \autoref{fig:H2LVL}, we can see that all the population can by find onto the first level of the atom when there is no laser fields and none onto the second level. But when the amplitude of the laser field increase the first level lost population and the population goes onto the second level. Levels are stabilizing each other around $50\%$ of population for each level. For the \autoref{fig:H3LVL}, the levels 1 and 2 are acting like in the 2 level atom but they stabilize each other around $25\%$ of the population. But the third level gains $50\%$ of population for itself. So when you put a laser field onto an 3 level atom and increase its amplitude you will put half of the population onto the third level.\\
+We have also draw the population of the molecular system according to $L$ (The size of the distribution of the potential) :
+\begin{figure}[htbp]
+    \centering
+    \includegraphics[width=.70\linewidth]{wavefunction_Hmol.pdf}
+    \caption{Population of a molecular system according to $L$}
+    \label{fig:H3LVL}
+\end{figure}\\
+We can see on the previous plot that when $L$ is null the population is at $60\%$ onto the third level and the other have $20\%$ of the population. But when $L$ increase the all the population goes to the first level then after a certain stade the population goes to level 2 and 3 and gave up the level 1. We can imagine that the distribution of the potential is too much big so it is easier for electrons/holes to move between atoms of the molecule.
+\newpage
+\section{Conclusion}
+\label{sec:conclusion}
+\noindent
+This program can be usefull to find the ground state of an Hmiltonian. Unfortunately it is only working with the power iterative method. By correcting the Lanczos method the program could be improved because theoritically this method converge faster than the first one. To work on this project was a good opportunity to learn more about the diagonalization methods, even if the Lanczos one is a failure. But you can create your own Hamiltonian and compute its ground state easily.  
 \newpage
 \section{Appendix}
 \label{app:app}

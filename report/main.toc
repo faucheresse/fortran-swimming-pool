@@ -1,7 +1,8 @@
 \selectlanguage *{english}
 \contentsline {section}{\numberline {I}Introduction}{2}{section.1}%
 \contentsline {section}{\numberline {II}Functional requirement of the program}{2}{section.2}%
-\contentsline {subsection}{\numberline {II.1}Hamiltonians}{2}{subsection.2.1}%
+\contentsline {subsection}{\numberline {II.1}Compilation and execution}{2}{subsection.2.1}%
+\contentsline {subsection}{\numberline {II.2}Hamiltonians}{2}{subsection.2.2}%
 \contentsline {section}{\numberline {III}Internal structure of the program}{4}{section.3}%
 \contentsline {subsection}{\numberline {III.1}Description of the diagonalization algorithms}{4}{subsection.3.1}%
 \contentsline {subsubsection}{\numberline {III.1.1}The power method algorithm}{4}{subsubsection.3.1.1}%
@@ -9,5 +10,6 @@
 \contentsline {section}{\numberline {IV}Quality approach, reliability of the program}{6}{section.4}%
 \contentsline {subsection}{\numberline {IV.1}Code verifications}{6}{subsection.4.1}%
 \contentsline {section}{\numberline {V}Physical study}{6}{section.5}%
-\contentsline {section}{\numberline {VI}Appendix}{7}{section.6}%
-\contentsline {subsection}{\numberline {VI.1}Proof of the relation for the caracteristic polynomial}{7}{subsection.6.1}%
+\contentsline {section}{\numberline {VI}Conclusion}{8}{section.6}%
+\contentsline {section}{\numberline {VII}Appendix}{9}{section.7}%
+\contentsline {subsection}{\numberline {VII.1}Proof of the relation for the caracteristic polynomial}{9}{subsection.7.1}%
